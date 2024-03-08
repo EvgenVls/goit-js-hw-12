@@ -123,6 +123,7 @@ button:focus {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  /* height: 48px; */
 }
 
 .image-info-item {
@@ -144,4 +145,10 @@ button:focus {
   font-weight: 400;
   letter-spacing: 0.04em;
   color: #2e2f42;
+}
+
+#load-more-btn {
+  width: 125px;
+  margin-left: auto;
+  margin-right: auto;
 }

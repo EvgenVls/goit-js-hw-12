@@ -31,24 +31,24 @@ function showMessageError(textMes) {
     }); 
 }
 
-function showGallery(tagImage) {
+async function showGallery(tagImage) {
    if (tagImage) {
        form.reset();
        gallery.innerHTML = '';
        loader.style.display = 'grid';
-       searchImages(tagImage)
-            .then(data => {
-                const arrayImages = data.hits;
-                if (arrayImages.length) {
-                    gallery.innerHTML = createMarcupGallery(arrayImages);
-                    lightbox.refresh();
+       try {
+            const data = await searchImages(tagImage)
+            const arrayImages = data.hits;
+            if (arrayImages.length) {
+                gallery.innerHTML = createMarcupGallery(arrayImages);
+                lightbox.refresh();
                 } else {
                     showMessageError(
                         'Sorry, there are no images matching your search query. Please try again!');
-                }
-            })
-            .catch((error) => showMessageError(error))
-            .finally(() => loader.style.display = 'none');
+                }            
+        }                
+       catch (error) { showMessageError(`${error}`); }
+       finally { loader.style.display = 'none' };
     } 
 }
 

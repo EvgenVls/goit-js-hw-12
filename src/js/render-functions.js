@@ -5,7 +5,7 @@ function createMarcupGallery(images) {
         `<li class="gallery-item">
           <div class="gallery-image-tumb">
             <a class="gallery-link" href="${element.largeImageURL}">
-                <img class="gallery-image" src="${element.webformatURL}" alt="${element.tags}" />
+                <img class="gallery-image" src="${element.webformatURL}" alt="${element.tags}" height="152" />
             </a>
           </div>
             <ul class="image-info">
