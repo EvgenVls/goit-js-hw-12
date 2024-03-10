@@ -48,6 +48,9 @@ async function showGallery(tagImage) {
             if (arrayImages.length) {
                 const marcup = await createMarcupGallery(arrayImages);
                 gallery.insertAdjacentHTML('beforeend', marcup);
+                if (page != 1) {
+                    scrollPage();
+                }
                 lightbox.refresh();
             } else {
                     showMessageError(
@@ -92,5 +95,4 @@ form.addEventListener('submit', event => {
 btn.addEventListener('click', () => {
     page += 1;
     showGallery(tagImage);
-    scrollPage();        
 })
