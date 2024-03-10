@@ -9,6 +9,7 @@ import createMarcupGallery from './js/render-functions';
 
 const form = document.querySelector('.form');
 const gallery = document.querySelector('.gallery');
+const btn = document.querySelector('#load-more-btn');
 const loader = document.querySelector('.loader');
 
 const lightbox = new SimpleLightbox('.gallery a',
@@ -17,6 +18,10 @@ const lightbox = new SimpleLightbox('.gallery a',
         captionDelay: 250,
     });
 
+    let tagImage;
+    let perPage = 15;
+    let page;
+   
 function showMessageError(textMes) {
     iziToast.error({
         iconUrl: iconError,
@@ -28,32 +33,64 @@ function showMessageError(textMes) {
         titleColor: '#FFFFFF',
         messageColor: '#FFFFFF',
         theme: 'dark',
-    }); 
+    });
 }
 
 async function showGallery(tagImage) {
-   if (tagImage) {
-       form.reset();
-       gallery.innerHTML = '';
-       loader.style.display = 'grid';
+    btn.style.display = 'none';
+    if (tagImage) {
+        loader.style.display = 'grid';
+        let totalPages;
        try {
-            const data = await searchImages(tagImage)
+            const data = await searchImages(tagImage, page, perPage);
             const arrayImages = data.hits;
+            totalPages = Math.ceil(data.totalHits / perPage);
             if (arrayImages.length) {
-                gallery.innerHTML = createMarcupGallery(arrayImages);
+                const marcup = await createMarcupGallery(arrayImages);
+                gallery.insertAdjacentHTML('beforeend', marcup);
                 lightbox.refresh();
-                } else {
+            } else {
                     showMessageError(
                         'Sorry, there are no images matching your search query. Please try again!');
                 }            
         }                
        catch (error) { showMessageError(`${error}`); }
-       finally { loader.style.display = 'none' };
+       finally {
+        loader.style.display = 'none';
+        if (page < totalPages) {
+            btn.style.display = 'block';
+        }
+        if (page === totalPages) {
+            iziToast.info({
+                message: "We're sorry, but you've reached the end of search results.",
+                maxWidth: '432px',
+                position: 'topRight',
+                messageSize: 16,
+            })
+        }
+        };
     } 
+}
+
+function scrollPage() {
+    const amountScroll = gallery.firstElementChild.getBoundingClientRect().height * 2;    
+    window.scrollBy({
+        top: amountScroll,
+        behavior: 'smooth',
+    })
 }
 
 form.addEventListener('submit', event => {
     event.preventDefault();
-    const tagImage = event.target.elements.search.value;
+    tagImage = event.target.elements.search.value.trim();
+    form.reset();
+    gallery.innerHTML = null;
+    page = 1;
     showGallery(tagImage);
+})
+
+btn.addEventListener('click', () => {
+    page += 1;
+    showGallery(tagImage);
+    scrollPage();        
 })

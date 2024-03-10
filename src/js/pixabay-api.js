@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default searchImages;
 
-async function searchImages(tagImage) {
+async function searchImages(tagImage, page, perPage) {
 
     axios.defaults.baseURL = 'https://pixabay.com/api/';
 
@@ -12,6 +12,8 @@ async function searchImages(tagImage) {
             image_type: 'photo',
             orientation: 'horizontal',
             safesearch: 'true',
+            per_page: perPage,
+            page: page,
             q: `${tagImage}`,
         }
     }
